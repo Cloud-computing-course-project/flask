@@ -284,14 +284,16 @@ margin-bottom:0px;
                 Web
            Application <br></span>  
       </pre></span>         
-      <div class="footer">   
-      <form method="post" action=""  enctype="multipart/form-data" >
+      <div class="footer"> 
+        <p><img id="output" width="500"></p>
+      <form method="post" action="saveImgLFS"  enctype="multipart/form-data" >
       <div class="inputBox">
-      <input class="lab" type="file"  id="file" name="photo" style="display:none; visibility:none;">
+      <input class="lab" type="file"  id="file" name="image"  onchange="loadFile(event)" style="display:none; visibility:none;">
       <label for="file">Choose a photo</label>
       </div>
      <div class="inputBox"></div>
      <input name="img_key"  id="input1" type="text" placeholder="key"><br>
+     <h1 id="helpingMessage"></h1>
      <button class="button"> Save</button>
     </div>
      </form>
@@ -324,5 +326,15 @@ margin-bottom:0px;
        </footer>
     
        </div>
+       
+       <script>
+        var loadFile = function(event) {
+          var image = document.getElementById('output');
+          image.src = URL.createObjectURL(event.target.files[0]);
+        };
+        var displayMessage = function(event) {
+          var h4 = document.getElementById('helpingMessage').innerHTML = "yourTextHere";
+        };
+        </script>
 </body>
 </html>
