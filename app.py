@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, flash, request, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from flask_session.__init__ import Session
@@ -17,19 +18,20 @@ db = SQLAlchemy(app)
 sess = Session()
 
 class Keys(db.Model):
-    key = db.Column(db.Integer, primary_key=True)
+    key_id = db.Column(db.String(200), primary_key=True)
     img_path = db.Column(db.String(200), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    date_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    date_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
 
 #Functions
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# with app.app_context():
-#     db.create_all()
+with app.app_context():
+    db.create_all()
 
 def get_db_connection():
-    conn = sqlite3.connect('keys.db')
+    conn = sqlite3.connect('./instance/keys.db')
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -58,7 +60,7 @@ def policy():
 def upload_file():
     if request.method == 'POST':
         file = request.files['image']
-        key = request.form['img_key']
+        key_id = request.form.get('img_key')
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -67,10 +69,11 @@ def upload_file():
 
             #Save key and img_path into db
             conn = get_db_connection()
-            conn.execute('INSERT INTO keys (key, img_path) VALUES (?, ?)', (key, img_path))
+            conn.execute('INSERT INTO keys (key_id, img_path) VALUES (?, ?)', (key_id, img_path))
             conn.commit()
             conn.close()
-            return 'Success'
+            # flash("User Updated Successfully!")
+            return render_template('main.html')
 
 
         # return 'Please choose a photo'

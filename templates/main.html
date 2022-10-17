@@ -295,6 +295,9 @@ margin-bottom:0px;
      <input name="img_key"  id="input1" type="text" placeholder="key"><br>
      <h1 id="helpingMessage"></h1>
      <button class="button"> Save</button>
+     {% for mesg in get_flashed_messages() %}
+     <h1>{{ mesg }}</h1>
+     {% endfor %}
     </div>
      </form>
       </div>  
