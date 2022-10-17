@@ -82,12 +82,13 @@ def upload_file():
         # return 'This photo has been stored before. If you are sure it\'s not, please rename the photo'
         # Key constraints
 
-@app.route('/search')
+@app.route('/search', methods=['GET', 'POST'])
 def search():
     key_id = request.form.get('img_key')
-    img_path = Keys.query.filter_by(key_id=key_id).first()
+    img_path = Keys.query.filter_by(key_id=key_id).first().img_path
     return render_template('SearchanImage.html', user_image = img_path)
-    
+#if key is not found
+
 @app.route('/getAllKey' , methods=['GET', 'POST'])
 def getAllKey():
     try:
