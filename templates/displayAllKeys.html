@@ -274,9 +274,15 @@ font-size: 1.4em;
 
     <h1 class="h1-text">Keys</h1>
         <ul class="ul-2">
-          {% for keys in key %}
+          {% comment %} {% for keys in key %}
        <li id="mem"> {{key.img_key}} </li>
-       {% endfor %}
+       {% endfor %} {% endcomment %}
+       <script type="text/javascript">
+        let collection = document.getElementByTagName("ul-2");
+        Array.from(collection).forEach(function(element) {
+          console.log(element)
+        });
+        </script>
         </ul>
 </div>
 

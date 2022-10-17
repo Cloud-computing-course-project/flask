@@ -87,6 +87,28 @@ def search():
     key_id = request.form.get('img_key')
     img_path = Keys.query.filter_by(key_id=key_id).first()
     return render_template('SearchanImage.html', user_image = img_path)
+    
+@app.route('/getAllKey' , methods=['GET', 'POST'])
+def getAllKey():
+    try:
+        sqliteConnection = sqlite3.connect('keys.db')
+        cursor = sqliteConnection.cursor()
+        print("Connected to SQLite")
+
+        sqlite_select_query = """SELECT Key from Keys"""
+        cursor.execute(sqlite_select_query)
+        records = cursor.fetchall()
+        records = list(zip(*records))
+        print("Printing each row in column key")
+        for column in records:
+            print(column)
+        cursor.close()
+    except sqlite3.Error as error:
+        print("Failed to read data from sqlite table", error)
+    finally:
+        if sqliteConnection:
+            sqliteConnection.close()
+            print("The SQLite connection is closed")
 
 # Displays any errors
 if __name__ == "__main__":
