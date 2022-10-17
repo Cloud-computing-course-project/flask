@@ -40,9 +40,7 @@ def get_db_connection():
 def main():
     return render_template('main.html')
 
-@app.route('/displayAllKeys')
-def displayAllKeys():
-    return render_template('displayAllKeys.html')
+
 
 @app.route('/SearchanImage')
 def SearchanImage():
@@ -89,26 +87,27 @@ def search():
     return render_template('SearchanImage.html', user_image = img_path)
 #if key is not found
 
-@app.route('/getAllKey' , methods=['GET', 'POST'])
+@app.route('/displayAllKeys' , methods=['GET', 'POST'])
 def getAllKey():
     try:
-        sqliteConnection = sqlite3.connect('keys.db')
-        cursor = sqliteConnection.cursor()
-        print("Connected to SQLite")
-
-        sqlite_select_query = """SELECT Key from Keys"""
-        cursor.execute(sqlite_select_query)
-        records = cursor.fetchall()
-        records = list(zip(*records))
+        conn = get_db_connection()
+        cur = conn.cursor()
+        sqlite_select_query = """SELECT key_id from Keys"""
+        cur.execute(sqlite_select_query)
+        records = cur.fetchall()
+        records = list(*zip(*records))
+        conn.commit()
         print("Printing each row in column key")
         for column in records:
             print(column)
-        cursor.close()
+        conn.close()
+        return render_template('displayAllKeys.html', keys_list = records)
     except sqlite3.Error as error:
         print("Failed to read data from sqlite table", error)
+        return render_template('displayAllKeys.html')
     finally:
-        if sqliteConnection:
-            sqliteConnection.close()
+        if conn:
+            conn.close()
             print("The SQLite connection is closed")
 
 # Displays any errors
