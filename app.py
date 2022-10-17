@@ -40,8 +40,6 @@ def get_db_connection():
 def main():
     return render_template('main.html')
 
-
-
 @app.route('/SearchanImage')
 def SearchanImage():
     return render_template('SearchanImage.html')
@@ -65,12 +63,19 @@ def upload_file():
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(img_path)
 
-            #Save key and img_path into db
-            conn = get_db_connection()
-            conn.execute('INSERT INTO keys (key_id, img_path) VALUES (?, ?)', (key_id, img_path))
-            conn.commit()
-            conn.close()
-            # flash("User Updated Successfully!")
+            raw = Keys.query.filter_by(key_id=key_id).first()
+            key_exists = raw is not None
+            if key_exists:
+                raw.img_path = img_path
+                db.session.commit()
+                flash("Key Updated Successfully!")
+            else: 
+                #Save key and img_path into db
+                conn = get_db_connection()
+                conn.execute('INSERT INTO keys (key_id, img_path) VALUES (?, ?)', (key_id, img_path))
+                conn.commit()
+                conn.close()
+                flash("Key Added Successfully!")
             return render_template('main.html')
 
 
