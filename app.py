@@ -1,11 +1,13 @@
 import os
 from flask import Flask, render_template, flash, request, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import null
 from sqlalchemy.sql import func
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from flask_session.__init__ import Session
 import sqlite3
+import gladiator as gl
 
 UPLOAD_FOLDER = './static/images_added_by _the_user/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -72,10 +74,17 @@ def upload_file():
             else: 
                 #Save key and img_path into db
                 conn = get_db_connection()
-                conn.execute('INSERT INTO keys (key_id, img_path) VALUES (?, ?)', (key_id, img_path))
-                conn.commit()
-                conn.close()
-                flash("Key Added Successfully!")
+                #Validation key
+                
+                if key_id == null or key_id == '':
+                    conn.commit()
+                    conn.close()
+                    flash("Please enter a key for the photo")
+                else:
+                    conn.execute('INSERT INTO keys (key_id, img_path) VALUES (?, ?)', (key_id, img_path))
+                    conn.commit()
+                    conn.close()
+                    flash("Key Added Successfully!")
             return render_template('main.html')
 
 
