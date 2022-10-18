@@ -7,11 +7,14 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from flask_session.__init__ import Session
 import sqlite3
-import gladiator as gl
+# import gladiator as gl
 
 UPLOAD_FOLDER = './static/images_added_by _the_user/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 SESSION_TYPE = 'memcache'
+
+global memcache
+memcache = {}
 
 app = Flask(__name__, static_url_path='/static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -59,7 +62,7 @@ def upload_file():
     if request.method == 'POST':
         file = request.files['image']
         key_id = request.form.get('img_key')
-
+        conn = get_db_connection()
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -73,26 +76,22 @@ def upload_file():
                 flash("Key Updated Successfully!")
             else: 
                 #Save key and img_path into db
-                conn = get_db_connection()
                 #Validation key
                 
                 if key_id == null or key_id == '':
-                    conn.commit()
-                    conn.close()
                     flash("Please enter a key for the photo")
                 else:
                     conn.execute('INSERT INTO keys (key_id, img_path) VALUES (?, ?)', (key_id, img_path))
-                    conn.commit()
-                    conn.close()
                     flash("Key Added Successfully!")
-            return render_template('main.html')
+        else:
+            flash("Please choose a photo that is \'png\', \'jpg\' or \'jpeg\'")
+            
+        conn.commit()
+        conn.close()
+        return render_template('main.html')
 
-
-        # return 'Please choose a photo'
-        # return 'Please choose a file that is \'png\', \'jpg\' or \'jpeg\''
-        # return 'Please enter a key for the photo'
         # return 'This photo has been stored before. If you are sure it\'s not, please rename the photo'
-        # Key constraints
+        # Key constraints (not spaces)
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
