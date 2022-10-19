@@ -1,3 +1,16 @@
+#////////////////////////////////////////Tasks///////////////////////////////
+#Complete put in memcache (look at replace policy) (Doaa)
+#Add baraa function for key (baraa)
+#Front end: edit memcache config list (look at schema) + get values from db and show in html (in specific time) (Dalia)
+#Front end: Add select capacity - edit clear button style (Baraa)
+#Backend: save capacity choosen - save policy choosen (in db) (Baraa)
+#Frontend: Tell user the defult policy is random - Default capacity 5MB (Doaa)
+#Put real data in Database
+
+
+
+
+
 import os
 from flask import Flask, render_template, flash, request, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
@@ -7,7 +20,6 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from flask_session.__init__ import Session
 import sqlite3
-# import gladiator as gl
 
 UPLOAD_FOLDER = './static/images_added_by _the_user/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -28,6 +40,16 @@ class Keys(db.Model):
     date_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     date_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
 
+class MemcacheConfig(db.Model):
+    capacity_MB = db.Column(db.Integer(), primary_key=True)
+    replace_policy = db.Column(db.String(200), nullable=False)
+    items_num = db.Column(db.Integer(), nullable=False)
+    items_size = db.Column(db.Integer(), nullable=False)
+    request_num = db.Column(db.Integer(), nullable=False)
+    hit_rate_percent = db.Column(db.Float(), nullable=False)
+    miss_rate_percent = db.Column(db.Float(), nullable=False)
+
+
 #Functions
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -39,6 +61,20 @@ def get_db_connection():
     conn = sqlite3.connect('./instance/keys.db')
     conn.row_factory = sqlite3.Row
     return conn
+
+#Memcache operations
+def put_in_memcache(key, value):
+    #Check capacity and policy
+    memcache[key] = value
+
+def get_from_memcache(key):
+    return memcache.get(key)
+
+def clear_memcache():
+    memcache.clear()
+
+def invalidateKey(key):
+    del memcache[key]
 
 #Routes
 @app.route('/')
@@ -61,8 +97,9 @@ def policy():
 def upload_file():
     if request.method == 'POST':
         file = request.files['image']
-        key_id = request.form.get('img_key')
+        key_id = request.form.get('img_key').strip()
         conn = get_db_connection()
+
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -71,34 +108,43 @@ def upload_file():
             raw = Keys.query.filter_by(key_id=key_id).first()
             key_exists = raw is not None
             if key_exists:
-                raw.img_path = img_path
+                raw.img_path = img_path #update in Database
                 db.session.commit()
+                if get_from_memcache(key_id)
+                    invalidateKey(key_id)
+                put_in_memcache(key_id, img_path)
                 flash("Key Updated Successfully!")
             else: 
-                #Save key and img_path into db
-                #Validation key
-                
+                #Save key and img_path into db                
                 if key_id == null or key_id == '':
                     flash("Please enter a key for the photo")
                 else:
                     conn.execute('INSERT INTO keys (key_id, img_path) VALUES (?, ?)', (key_id, img_path))
+                    put_in_memcache(key_id, img_path)
                     flash("Key Added Successfully!")
         else:
             flash("Please choose a photo that is \'png\', \'jpg\' or \'jpeg\'")
-            
+
         conn.commit()
         conn.close()
         return render_template('main.html')
 
-        # return 'This photo has been stored before. If you are sure it\'s not, please rename the photo'
-        # Key constraints (not spaces)
-
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     key_id = request.form.get('img_key')
-    img_path = Keys.query.filter_by(key_id=key_id).first().img_path
-    return render_template('SearchanImage.html', user_image = img_path)
-#if key is not found
+    #search in mem_cache
+    img_path_from_memcache = get_from_memcache(key_id)
+    if img_path_from_memcache:
+        return render_template('SearchanImage.html', user_image = img_path_from_memcache)
+    #Get from database  
+    else:
+        img_path = Keys.query.filter_by(key_id=key_id).first()
+        if img_path:
+            return render_template('SearchanImage.html', user_image = img_path.img_path)
+        else:
+            flash("Key is not found")
+            return render_template('SearchanImage.html')
+
 
 @app.route('/displayAllKeys' , methods=['GET', 'POST'])
 def getAllKey():
@@ -123,11 +169,16 @@ def getAllKey():
             conn.close()
             print("The SQLite connection is closed")
 
+@app.route('/clear', methods=['POST'])
+def clear():
+    clear_memcache()
+    return render_template('policy.html')
+
+
 # Displays any errors
 if __name__ == "__main__":
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
 
     sess.init_app(app)
-    app.run(debug=True)
-
+    app.run(debug=False)

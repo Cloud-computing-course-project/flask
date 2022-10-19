@@ -269,6 +269,9 @@
           <div class="inputBox">
           <input name="img_key"  id="input1" type="text" placeholder="key"><br>
           <button class="button"> Search</button>
+          {% for mesg in get_flashed_messages() %}
+          <h1>{{ mesg }}</h1>
+          {% endfor %}
           <img src="{{ user_image }}">
         </div>
         </div>
