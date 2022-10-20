@@ -62,6 +62,11 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+def get_mem_db_connection():
+    conn = sqlite3.connect('./instance/memcache_config.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
 #Memcache operations
 def put_in_memcache(key, value):
     #Check capacity and policy
@@ -128,6 +133,19 @@ def upload_file():
         conn.commit()
         conn.close()
         return render_template('main.html')
+
+@app.route('/saveConfig', methods=['GET', 'POST'])
+def UploadDateToMem():
+    if request.method == 'POST':
+        capacity = request.form('range')
+        conn = get_mem_db_connection()
+        conn.execute('INSERT INTO memcache_config (capacity_MB) VALUES (?)', (capacity))
+        flash("Capacity Added Successfully!")
+    else:
+        flash("Error Added !")
+    conn.commit()
+    conn.close()
+    return render_template('memory_Cache.html')
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
