@@ -5,7 +5,7 @@
 #Front end: Add select capacity - edit clear button style - Done (Baraa) ***********************************************************
 #Backend: save capacity choosen - save policy choosen (in db) (Baraa)
 #Frontend: Tell user the defult policy is random - Default capacity 5MB (Doaa) Done *************************************************
-#Backend: Calculate the memconfig (Dalia)
+#Backend: Calculate the memconfig (Dalia) Donr **************************************************************************************
 #Put real data in Database
 
 
@@ -18,6 +18,10 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from flask_session.__init__ import Session
 import sqlite3
+import atexit
+
+from apscheduler.schedulers.background import BackgroundScheduler
+
 
 UPLOAD_FOLDER = './static/images_added_by _the_user/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -56,6 +60,31 @@ with app.app_context():
     my_conn.commit()
     my_conn.close()
 
+#Update memconfig every 5 seconds
+item_size_in_mem = 0 #Is updated whenever we add or remove file
+request_num_from_mem = 0 #Is updated whenever we search
+hit_rate_percent_from_mem = 0 #Is updated whenever we find our serach in memcache
+miss_rate_percent_from_mem = 0 #Is updated whenever we don't our serach in memcache
+def update_mem_config():
+    with app.app_context():
+        raw = MemcacheConfig.query.all()[0]
+        raw.items_num = len(memcache)
+        raw.items_size = item_size_in_mem
+        raw.request_num = request_num_from_mem
+        if request_num_from_mem > 0:
+            raw.hit_rate_percent = (hit_rate_percent_from_mem/request_num_from_mem) * 100
+            raw.miss_rate_percent = (miss_rate_percent_from_mem/request_num_from_mem) * 100
+        db.session.commit()
+        print("Memcache configs is updated", memcache)
+
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=update_mem_config, trigger="interval", seconds=5)
+scheduler.start()
+
+# Shut down the scheduler when exiting the app
+atexit.register(lambda: scheduler.shutdown())
+
 #Functions
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -76,6 +105,8 @@ def put_in_memcache(key, value):
     memcache[key] = value
 
 def get_from_memcache(key):
+    global request_num_from_mem 
+    request_num_from_mem = request_num_from_mem + 1
     return memcache.get(key)
 
 def clear_memcache():
@@ -131,7 +162,9 @@ def upload_file():
                 db.session.commit()
                 if get_from_memcache(key_id):
                     invalidateKey(key_id)
+                    #Update item_size_in_mem //////////////////////////////////////////////
                 put_in_memcache(key_id, img_path)
+                #Update item_size_in_mem //////////////////////////////////////////////
                 flash("Key Updated Successfully!")
             else: 
                 #Save key and img_path into db                
@@ -140,6 +173,7 @@ def upload_file():
                 else:
                     conn.execute('INSERT INTO keys (key_id, img_path) VALUES (?, ?)', (key_id, img_path))
                     put_in_memcache(key_id, img_path)
+                    #Update item_size_in_mem //////////////////////////////////////////////
                     flash("Key Added Successfully!")
         else:
             flash("Please choose a photo that is \'png\', \'jpg\' or \'jpeg\'")
@@ -155,12 +189,12 @@ def UploadDateToMem():
         replace_policy = request.form.get('format')
         conn = get_db_connection()
         #update memcache_config /////////////////////////////////Baraa///////////////////////////
-        flash("replace_policy Added Successfully!")
+        flash("Configs Added Successfully!")
     else:
         flash("Error Added !")
     conn.commit()
     conn.close()
-    return render_template('memory_Cache.html')
+    return redirect("memory_Cache")
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
@@ -168,9 +202,13 @@ def search():
     #search in mem_cache
     img_path_from_memcache = get_from_memcache(key_id)
     if img_path_from_memcache:
+        global hit_rate_percent_from_mem
+        hit_rate_percent_from_mem = hit_rate_percent_from_mem + 1
         return render_template('SearchanImage.html', user_image = img_path_from_memcache)
     #Get from database  
     else:
+        global miss_rate_percent_from_mem
+        miss_rate_percent_from_mem = miss_rate_percent_from_mem + 1
         img_path = Keys.query.filter_by(key_id=key_id).first()
         if img_path:
             return render_template('SearchanImage.html', user_image = img_path.img_path)
