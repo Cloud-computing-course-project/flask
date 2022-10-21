@@ -101,9 +101,19 @@ def get_mem_db_connection():
     return conn
 
 #Memcache operations
-def put_in_memcache(key, value):
-    #Check capacity and policy
+def put_in_memcache(key, value, img_size):
+    mem_config = MemcacheConfig.query.all()[0]
+    if (mem_config.items_size + img_size) > mem_config.capacity_MB:
+        if(mem_config.replace_policy == "Random"):
+            keyid, photo = random.choice(list(memcache.items()))
+            invalidateKey(keyid, img_size)
+            print("Randommmmmmmmmmmmmmmmmmmmmmmm")
+        else:
+            #Delete the Least Recently Used ///////////////////////////////////////Doaa
+            print("TODO")
     memcache[key] = value
+    update_item_size(img_size, True)
+    
 
 def get_from_memcache(key):
     global request_num_from_mem 
@@ -113,13 +123,17 @@ def get_from_memcache(key):
 def clear_memcache():
     memcache.clear()
 
-def invalidateKey(key):
+def invalidateKey(key, img_size):
     # minus the img size \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     del memcache[key]
+    update_item_size(img_size, False)
 
-def update_item_size(img_size):
+def update_item_size(img_size, isAdding):
     global item_size_in_mem
-    item_size_in_mem = item_size_in_mem + img_size
+    if isAdding:
+        item_size_in_mem = item_size_in_mem + img_size
+    else:
+        item_size_in_mem = item_size_in_mem - img_size
 
 #Routes
 @app.route('/')
@@ -156,43 +170,32 @@ def upload_file():
         key_id = request.form.get('img_key').strip()
         img_size = file.getbuffer().nbytes
         conn = get_db_connection()
-        mem_config = MemcacheConfig.query.all()[0]
-        if (mem_config.items_size + img_size) <= mem_config.capacity_MB:
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                file.save(img_path)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(img_path)
 
-                raw = Keys.query.filter_by(key_id=key_id).first()
-                key_exists = raw is not None
-                if key_exists:
-                    raw.img_path = img_path #update in Database
-                    db.session.commit()
-                    if get_from_memcache(key_id):
-                        invalidateKey(key_id)
-                        update_item_size(img_size)
-                    put_in_memcache(key_id, img_path)
-                    update_item_size(img_size)
-                    flash("Key Updated Successfully!")
-                else: 
-                    #Save key and img_path into db                
-                    if key_id == null or key_id == '':
-                        flash("Please enter a key for the photo")
-                    else:
-                        conn.execute('INSERT INTO keys (key_id, img_path) VALUES (?, ?)', (key_id, img_path))
-                        put_in_memcache(key_id, img_path)
-                        update_item_size(img_size)
-                        flash("Key Added Successfully!")
-            else:
-                flash("Please choose a photo that is \'png\', \'jpg\' or \'jpeg\'")
+            raw = Keys.query.filter_by(key_id=key_id).first()
+            key_exists = raw is not None
+            if key_exists:
+                raw.img_path = img_path #update in Database
+                db.session.commit()
+                if get_from_memcache(key_id):
+                    invalidateKey(key_id, img_size)
+                put_in_memcache(key_id, img_path, img_size)
+                flash("Key Updated Successfully!")
+            else: 
+                #Save key and img_path into db                
+                if key_id == null or key_id == '':
+                    flash("Please enter a key for the photo")
+                else:
+                    conn.execute('INSERT INTO keys (key_id, img_path) VALUES (?, ?)', (key_id, img_path))
+                    put_in_memcache(key_id, img_path, img_size)
+                    update_item_size(img_size,True)
+                    flash("Key Added Successfully!")
         else:
-            if(mem_config.replace_policy == "Random"):
-                keyid, photo = random.choice(list(memcache.items()))
-                invalidateKey(keyid)
-                upload_file()
-            else:
-                #Delete the Least Recently Used ///////////////////////////////////////Doaa
-                print("TODO")
+            flash("Please choose a photo that is \'png\', \'jpg\' or \'jpeg\'")
+
         conn.commit()
         conn.close()
         return render_template('main.html')
