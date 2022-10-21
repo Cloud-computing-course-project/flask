@@ -57,7 +57,7 @@ with app.app_context():
     my_conn = sqlite3.connect('./instance/keys.db')
     my_conn.execute("DROP table IF EXISTS memcache_config")
     db.create_all()
-    my_conn.execute('INSERT INTO memcache_config VALUES (?, ?, ?, ?, ?, ?, ?)', (5, "Random", 0, 0, 0, 0, 0)) #Default values for memcache_config
+    my_conn.execute('INSERT INTO memcache_config VALUES (?, ?, ?, ?, ?, ?, ?)', (50000, "Random", 0, 0, 0, 0, 0)) #Default values for memcache_config
     my_conn.commit()
     my_conn.close()
 
@@ -114,6 +114,7 @@ def clear_memcache():
     memcache.clear()
 
 def invalidateKey(key):
+    # minus the img size \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     del memcache[key]
 
 def update_item_size(img_size):
@@ -153,11 +154,10 @@ def upload_file():
     if request.method == 'POST':
         file = request.files['image']
         key_id = request.form.get('img_key').strip()
-        img_size = 0 #To be calculated ///////////////////////////////////////////
+        img_size = file.getbuffer().nbytes
         conn = get_db_connection()
         mem_config = MemcacheConfig.query.all()[0]
-
-        if (mem_config.item_size_in_mem + img_size) <= mem_config.capacity_MB:
+        if (mem_config.items_size + img_size) <= mem_config.capacity_MB:
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
