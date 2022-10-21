@@ -19,6 +19,7 @@ from werkzeug.utils import secure_filename
 from flask_session.__init__ import Session
 import sqlite3
 import atexit
+import random 
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -115,6 +116,10 @@ def clear_memcache():
 def invalidateKey(key):
     del memcache[key]
 
+def update_item_size(img_size):
+    global item_size_in_mem
+    item_size_in_mem = item_size_in_mem + img_size
+
 #Routes
 @app.route('/')
 def main():
@@ -148,36 +153,46 @@ def upload_file():
     if request.method == 'POST':
         file = request.files['image']
         key_id = request.form.get('img_key').strip()
+        img_size = 0 #To be calculated ///////////////////////////////////////////
         conn = get_db_connection()
+        mem_config = MemcacheConfig.query.all()[0]
 
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(img_path)
+        if (mem_config.item_size_in_mem + img_size) <= mem_config.capacity_MB:
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(img_path)
 
-            raw = Keys.query.filter_by(key_id=key_id).first()
-            key_exists = raw is not None
-            if key_exists:
-                raw.img_path = img_path #update in Database
-                db.session.commit()
-                if get_from_memcache(key_id):
-                    invalidateKey(key_id)
-                    #Update item_size_in_mem //////////////////////////////////////////////
-                put_in_memcache(key_id, img_path)
-                #Update item_size_in_mem //////////////////////////////////////////////
-                flash("Key Updated Successfully!")
-            else: 
-                #Save key and img_path into db                
-                if key_id == null or key_id == '':
-                    flash("Please enter a key for the photo")
-                else:
-                    conn.execute('INSERT INTO keys (key_id, img_path) VALUES (?, ?)', (key_id, img_path))
+                raw = Keys.query.filter_by(key_id=key_id).first()
+                key_exists = raw is not None
+                if key_exists:
+                    raw.img_path = img_path #update in Database
+                    db.session.commit()
+                    if get_from_memcache(key_id):
+                        invalidateKey(key_id)
+                        update_item_size(img_size)
                     put_in_memcache(key_id, img_path)
-                    #Update item_size_in_mem //////////////////////////////////////////////
-                    flash("Key Added Successfully!")
+                    update_item_size(img_size)
+                    flash("Key Updated Successfully!")
+                else: 
+                    #Save key and img_path into db                
+                    if key_id == null or key_id == '':
+                        flash("Please enter a key for the photo")
+                    else:
+                        conn.execute('INSERT INTO keys (key_id, img_path) VALUES (?, ?)', (key_id, img_path))
+                        put_in_memcache(key_id, img_path)
+                        update_item_size(img_size)
+                        flash("Key Added Successfully!")
+            else:
+                flash("Please choose a photo that is \'png\', \'jpg\' or \'jpeg\'")
         else:
-            flash("Please choose a photo that is \'png\', \'jpg\' or \'jpeg\'")
-
+            if(mem_config.replace_policy == "Random"):
+                keyid, photo = random.choice(list(memcache.items()))
+                invalidateKey(keyid)
+                upload_file()
+            else:
+                #Delete the Least Recently Used ///////////////////////////////////////Doaa
+                print("TODO")
         conn.commit()
         conn.close()
         return render_template('main.html')
@@ -188,14 +203,8 @@ def UploadDateToMem():
         capacity = request.form.get('myRange')
         replace_policy = request.form.get('format')
         conn = get_db_connection()
-        sql_update_query = """Update memcache_config set capacity_MB = 3,replace_policy = least """
-        conn.execute(sql_update_query)
-        conn.commit()
-        flash("Configs Added Successfully!")
-        conn.close()
-        # conn.execute('UPDATE memcache_config SET capacity_MB ,  replace_policy , items_num , items_size , request_num , hit_rate_percent , miss_rate_percent  ', (capacity,replace_policy , 1 ,1, 1 , 1.0 ,1.0))
         #update memcache_config /////////////////////////////////Baraa///////////////////////////
-        
+        flash("Configs Added Successfully!")
     else:
         flash("Error Added !")
     conn.commit()
