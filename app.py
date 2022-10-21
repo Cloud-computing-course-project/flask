@@ -117,7 +117,7 @@ def upload_file():
             if key_exists:
                 raw.img_path = img_path #update in Database
                 db.session.commit()
-                if get_from_memcache(key_id)::
+                if get_from_memcache(key_id):
                     invalidateKey(key_id)
                 put_in_memcache(key_id, img_path)
                 flash("Key Updated Successfully!")
