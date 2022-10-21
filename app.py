@@ -1,10 +1,11 @@
 #////////////////////////////////////////Tasks///////////////////////////////
 #Complete put in memcache (look at replace policy) (Doaa)
-#Add baraa function for key (baraa) Done
-#Front end: edit memcache config list (look at schema) + get values from db and show in html (in specific time) (Dalia)
-#Front end: Add select capacity - edit clear button style - Done (Baraa)
+#Add baraa function for key (baraa) Done *******************************************************************************************
+#Front end: edit memcache config list (look at schema) + get values from db and show in html (in specific time) (Dalia) Done *******************
+#Front end: Add select capacity - edit clear button style - Done (Baraa) ***********************************************************
 #Backend: save capacity choosen - save policy choosen (in db) (Baraa)
-#Frontend: Tell user the defult policy is random - Default capacity 5MB (Doaa)
+#Frontend: Tell user the defult policy is random - Default capacity 5MB (Doaa) Done *************************************************
+#Backend: Calculate the memconfig (Dalia)
 #Put real data in Database
 
 
@@ -51,7 +52,7 @@ with app.app_context():
     my_conn = sqlite3.connect('./instance/keys.db')
     my_conn.execute("DROP table IF EXISTS memcache_config")
     db.create_all()
-    my_conn.execute('INSERT INTO memcache_config (capacity_MB, replace_policy) VALUES (?, ?)', (5, "Random")) #Default values for memcache_config
+    my_conn.execute('INSERT INTO memcache_config VALUES (?, ?, ?, ?, ?, ?, ?)', (5, "Random", 0, 0, 0, 0, 0)) #Default values for memcache_config
     my_conn.commit()
     my_conn.close()
 
@@ -94,7 +95,18 @@ def SearchanImage():
 
 @app.route('/memory_Cache')
 def memory_Cache():
-    return render_template('memory_Cache.html')
+    raw = MemcacheConfig.query.all()[0] #We only have one raw
+    capacity_MB = raw.capacity_MB
+    replace_policy = raw.replace_policy
+    items_num = raw.items_num
+    items_size = raw.items_size
+    request_num = raw.request_num
+    hit_rate_percent = raw.hit_rate_percent
+    miss_rate_percent = raw.miss_rate_percent
+
+    return render_template('memory_Cache.html', capacity_MB = capacity_MB, replace_policy = replace_policy,
+                                                items_num = items_num, items_size = items_size, request_num = request_num,
+                                                hit_rate_percent = hit_rate_percent, miss_rate_percent = miss_rate_percent)
 
 @app.route('/policy')
 def policy():
