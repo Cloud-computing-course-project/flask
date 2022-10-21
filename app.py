@@ -1,8 +1,8 @@
 #////////////////////////////////////////Tasks///////////////////////////////
 #Complete put in memcache (look at replace policy) (Doaa)
-#Add baraa function for key (baraa) Done Done
+#Add baraa function for key (baraa) Done
 #Front end: edit memcache config list (look at schema) + get values from db and show in html (in specific time) (Dalia)
-#Front end: Add select capacity - edit clear button style - Done - Done (Baraa)
+#Front end: Add select capacity - edit clear button style - Done (Baraa)
 #Backend: save capacity choosen - save policy choosen (in db) (Baraa)
 #Frontend: Tell user the defult policy is random - Default capacity 5MB (Doaa)
 #Put real data in Database
