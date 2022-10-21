@@ -10,6 +10,7 @@
 
 
 import os
+import sys
 from flask import Flask, render_template, flash, request, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import null
@@ -19,7 +20,8 @@ from werkzeug.utils import secure_filename
 from flask_session.__init__ import Session
 import sqlite3
 import atexit
-import random 
+import random
+from PIL import Image
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -124,7 +126,6 @@ def clear_memcache():
     memcache.clear()
 
 def invalidateKey(key, img_size):
-    # minus the img size \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     del memcache[key]
     update_item_size(img_size, False)
 
@@ -168,12 +169,15 @@ def upload_file():
     if request.method == 'POST':
         file = request.files['image']
         key_id = request.form.get('img_key').strip()
-        img_size = file.getbuffer().nbytes
         conn = get_db_connection()
+
+
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(img_path)
+            img_size = file.tell()
+            print(img_size, 'sdddddddddddddddddddddddddd')
 
             raw = Keys.query.filter_by(key_id=key_id).first()
             key_exists = raw is not None
@@ -191,7 +195,6 @@ def upload_file():
                 else:
                     conn.execute('INSERT INTO keys (key_id, img_path) VALUES (?, ?)', (key_id, img_path))
                     put_in_memcache(key_id, img_path, img_size)
-                    update_item_size(img_size,True)
                     flash("Key Added Successfully!")
         else:
             flash("Please choose a photo that is \'png\', \'jpg\' or \'jpeg\'")
