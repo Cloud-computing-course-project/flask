@@ -1,8 +1,8 @@
 #////////////////////////////////////////Tasks///////////////////////////////
 #Complete put in memcache (look at replace policy) (Doaa)
-#Add baraa function for key (baraa) Done
+#Add baraa function for key (baraa) Done Done
 #Front end: edit memcache config list (look at schema) + get values from db and show in html (in specific time) (Dalia)
-#Front end: Add select capacity - edit clear button style - Done (Baraa)
+#Front end: Add select capacity - edit clear button style - Done - Done (Baraa)
 #Backend: save capacity choosen - save policy choosen (in db) (Baraa)
 #Frontend: Tell user the defult policy is random - Default capacity 5MB (Doaa)
 #Put real data in Database
@@ -64,6 +64,11 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+def get_mem_db_connection():
+    conn = sqlite3.connect('./instance/memcache_config.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
 #Memcache operations
 def put_in_memcache(key, value):
     #Check capacity and policy
@@ -112,7 +117,7 @@ def upload_file():
             if key_exists:
                 raw.img_path = img_path #update in Database
                 db.session.commit()
-                if get_from_memcache(key_id):
+                if get_from_memcache(key_id)::
                     invalidateKey(key_id)
                 put_in_memcache(key_id, img_path)
                 flash("Key Updated Successfully!")

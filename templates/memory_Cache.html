@@ -306,6 +306,26 @@
     <div class="topic">
         <h1 >The current statistics for the Mem-Cache</h1>
     </div>
+    <form method="post" action="saveConfig"  enctype="multipart/form-data" >
+    <div id="biasindex">
+      <div class="slidecontainer">
+        <input type="range" min="1" max="4" value="0" class="slider" id="myRange">
+      </div>
+      <div class="slidercaption">Capacity: <span id="demo"></span> </div>
+    </div>
+    <script>
+    var slider = document.getElementById("myRange");
+    var output = document.getElementById("demo");
+    output.innerHTML = slider.value;
+    slider.oninput = function() {
+      output.innerHTML = this.value;
+    }
+    </script>
+    <button class="button"> Save</button>
+    {% for mesg in get_flashed_messages() %}
+    <h1>{{ mesg }}</h1>
+    {% endfor %}
+    </form>
     <div class="article-container group govuk-grid-column-two-thirds">
         <div class="content">
             <ul class="ul-2">
