@@ -28,6 +28,7 @@
         margin-top: 20px;
         margin-right:0%;
     }
+
     .topic{
       margin-top:200px;
       color:#272643;
@@ -49,6 +50,58 @@
        display: list-item;
        color:#2c698d;
     }
+    #biasindex{
+      display:flex;
+    }
+    
+    .slidercaption {
+      display: inline-block;
+      margin-top:3%;
+      float: left;
+    }
+
+    .slidecontainer {
+      width: 75%;
+      float: left;
+      display: inline-block;
+    }
+    .slider {
+    -webkit-appearance: none;
+    width: 75%;
+    height: 12px;
+    margin-top:5%;
+    margin-left:10%;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    float: left;
+    display: inline-block;
+  }
+
+  .slider:hover {
+    opacity: 1;
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #25A7FF;
+    cursor: pointer;
+  }
+
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #04AA6D;
+    cursor: pointer;
+  }
     .ul-2{
       margin-top:50px;
       margin-left:120px;
@@ -125,6 +178,7 @@
         font-weight: bold;
         font-size: 15px;
         margin-left:8%;
+        margin-top:5%;
         border-radius: 50px;
         border: #2c698d solid;
         margin-bottom: 10px;
@@ -269,13 +323,13 @@
         </div>
         <div class="info">
       <div class="par1">
-          <h4 class="par2">1. Capacity of Memory Cache in MB</h4>
+          <h4 class="par2">1. There are more than one choice for the capacity of the memory cache, but the default capacity is 5MB.</h4>
       <!-- <div class="par2"> -->
           <p><h4 class="par2">2. Replacement Policies:</h4>  </p>
       </div> 
           <p class="p1">
               a. Random Replacement<br>
-                  Randomly selects a key and discards it to make space when necessary.
+                  Its the default replacement policy of memory cache, Randomly selects a key and discards it to make space when necessary.
                   This algorithm does not require keeping any information about the access
                   history.
           </p>

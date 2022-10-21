@@ -1,14 +1,11 @@
 #////////////////////////////////////////Tasks///////////////////////////////
 #Complete put in memcache (look at replace policy) (Doaa)
-#Add baraa function for key (baraa)
+#Add baraa function for key (baraa) Done
 #Front end: edit memcache config list (look at schema) + get values from db and show in html (in specific time) (Dalia)
-#Front end: Add select capacity - edit clear button style (Baraa)
+#Front end: Add select capacity - edit clear button style - Done (Baraa)
 #Backend: save capacity choosen - save policy choosen (in db) (Baraa)
 #Frontend: Tell user the defult policy is random - Default capacity 5MB (Doaa)
 #Put real data in Database
-
-
-
 
 
 import os
@@ -42,20 +39,25 @@ class Keys(db.Model):
 
 class MemcacheConfig(db.Model):
     capacity_MB = db.Column(db.Integer(), primary_key=True)
-    replace_policy = db.Column(db.String(200), nullable=False)
-    items_num = db.Column(db.Integer(), nullable=False)
-    items_size = db.Column(db.Integer(), nullable=False)
-    request_num = db.Column(db.Integer(), nullable=False)
-    hit_rate_percent = db.Column(db.Float(), nullable=False)
-    miss_rate_percent = db.Column(db.Float(), nullable=False)
+    replace_policy = db.Column(db.String(200))
+    items_num = db.Column(db.Integer())
+    items_size = db.Column(db.Integer())
+    request_num = db.Column(db.Integer())
+    hit_rate_percent = db.Column(db.Float())
+    miss_rate_percent = db.Column(db.Float())
 
+#Clear memcache_config table
+with app.app_context():
+    my_conn = sqlite3.connect('./instance/keys.db')
+    my_conn.execute("DROP table IF EXISTS memcache_config")
+    db.create_all()
+    my_conn.execute('INSERT INTO memcache_config (capacity_MB, replace_policy) VALUES (?, ?)', (5, "Random")) #Default values for memcache_config
+    my_conn.commit()
+    my_conn.close()
 
 #Functions
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-with app.app_context():
-    db.create_all()
 
 def get_db_connection():
     conn = sqlite3.connect('./instance/keys.db')
@@ -110,7 +112,7 @@ def upload_file():
             if key_exists:
                 raw.img_path = img_path #update in Database
                 db.session.commit()
-                if get_from_memcache(key_id)
+                if get_from_memcache(key_id):
                     invalidateKey(key_id)
                 put_in_memcache(key_id, img_path)
                 flash("Key Updated Successfully!")
@@ -128,6 +130,20 @@ def upload_file():
         conn.commit()
         conn.close()
         return render_template('main.html')
+
+@app.route('/saveConfig', methods=['GET', 'POST'])
+def UploadDateToMem():
+    if request.method == 'POST':
+        capacity = request.form.get('myRange')
+        replace_policy = request.form.get('format')
+        conn = get_db_connection()
+        #update memcache_config /////////////////////////////////Baraa///////////////////////////
+        flash("replace_policy Added Successfully!")
+    else:
+        flash("Error Added !")
+    conn.commit()
+    conn.close()
+    return render_template('memory_Cache.html')
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():

@@ -127,19 +127,17 @@ a#home{
  }
 
 .button{
-    margin: 3px;
-    width: 15%;
-    padding-top:1%;
-    padding-bottom:1%;
+  
+    padding: 10px 15px;
+    text-align: center;
+    margin: 8px 4px;
+    width: 25%;
     background-color: #e3f6f5;
     font-family: 'Poppins', sans-serif;
     font-weight: bold;
     font-size: 15px;
-    margin-left:15%;
     border-radius: 50px;
     border: #2c698d solid;
-    margin-bottom: 10px;
-    margin-top: 7%;
     color:#272643;
     
 }
@@ -341,7 +339,7 @@ select::-ms-expand{
                    Policy <br></span>  
       </pre></span>         
       <div class="footer">   
-      <form method="post" action=""  enctype="multipart/form-data" >
+      <form method="post" action="saveConfig"  enctype="multipart/form-data" >
         <div class="select">
             <select name="format" id="format">
                <option selected disabled>Choose a Replacement Policy</option>
@@ -349,8 +347,22 @@ select::-ms-expand{
                <option value="Least">Least Recently Used</option>
             </select>
          </div>
+         <div class="select">Capacity:<span id="demo"> </span> </div>
+            <div class="select">
+              <input type="range" min="1" max="5" value="0" class="select" name="myRange" id="myRange">
+            </div>
+          <script>
+          var slider = document.getElementById("myRange");
+          var output = document.getElementById("demo");
+          output.innerHTML = slider.value;
+          slider.oninput = function() {
+            output.innerHTML = this.value;
+          }
+          </script>
+          {% for mesg in get_flashed_messages() %}
+          <h1>{{ mesg }}</h1>
+          {% endfor %}
      <button class="button"> Save</button> 
-
      </form>
      <form method="post" action="clear" enctype="multipart/form-data" >
       <button class="button"> Clear memcache</button> 
@@ -363,13 +375,13 @@ select::-ms-expand{
         </div>
         <div class="info">
       <div class="par1">
-          <h4 class="par2">1. Capacity of Memory Cache in MB</h4>
+          <h4 class="par2">1. There are more than one choice for the capacity of the memory cache, but the default capacity is 5MB.</h4>
       <!-- <div class="par2"> -->
           <p><h4 class="par2">2. Replacement Policies:</h4>  </p>
       </div>  
           <p class="p1">
               a. Random Replacement<br>
-                  Randomly selects a key and discards it to make space when necessary.
+                  Its the default replacement policy of memory cache, Randomly selects a key and discards it to make space when necessary.
                   This algorithm does not require keeping any information about the access
                   history.
           </p>
