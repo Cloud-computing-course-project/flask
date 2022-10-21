@@ -57,7 +57,7 @@ with app.app_context():
     my_conn = sqlite3.connect('./instance/keys.db')
     my_conn.execute("DROP table IF EXISTS memcache_config")
     db.create_all()
-    my_conn.execute('INSERT INTO memcache_config VALUES (?, ?, ?, ?, ?, ?, ?)', (50000, "Random", 0, 0, 0, 0, 0)) #Default values for memcache_config
+    my_conn.execute('INSERT INTO memcache_config VALUES (?, ?, ?, ?, ?, ?, ?)', (5000000, "Random", 0, 0, 0, 0, 0)) #Default values for memcache_config
     my_conn.commit()
     my_conn.close()
 
@@ -141,8 +141,8 @@ def memory_Cache():
     hit_rate_percent = raw.hit_rate_percent
     miss_rate_percent = raw.miss_rate_percent
 
-    return render_template('memory_Cache.html', capacity_MB = capacity_MB, replace_policy = replace_policy,
-                                                items_num = items_num, items_size = items_size, request_num = request_num,
+    return render_template('memory_Cache.html', capacity_MB = (capacity_MB/1000000), replace_policy = replace_policy,
+                                                items_num = items_num, items_size = (items_size/1000000), request_num = request_num,
                                                 hit_rate_percent = hit_rate_percent, miss_rate_percent = miss_rate_percent)
 
 @app.route('/policy')
@@ -202,13 +202,13 @@ def UploadDateToMem():
     if request.method == 'POST':
         capacity = request.form.get('myRange')
         replace_policy = request.form.get('format')
-        conn = get_db_connection()
-        #update memcache_config /////////////////////////////////Baraa///////////////////////////
+        mem_config = MemcacheConfig.query.all()[0]
+        mem_config.capacity_MB = int(capacity) * 1000000
+        mem_config.replace_policy = replace_policy
+        db.session.commit()
         flash("Configs Added Successfully!")
     else:
         flash("Error Added !")
-    conn.commit()
-    conn.close()
     return redirect("memory_Cache")
 
 @app.route('/search', methods=['GET', 'POST'])
