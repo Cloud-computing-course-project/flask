@@ -19,6 +19,7 @@ UPLOAD_FOLDER = './static/images_added_by _the_user/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 SESSION_TYPE = 'memcache'
 
+global lru_item
 global memcache
 memcache = {}
 
@@ -99,8 +100,7 @@ def put_in_memcache(key, value, img_size):
             keyid, photo = random.choice(list(memcache.items()))
             invalidateKey(keyid, img_size)
         else:
-            #Delete the Least Recently Used ///////////////////////////////////////Doaa
-            print("TODO")
+            memcache.popitem(lru_item)
     memcache[key] = value
     update_item_size(img_size, True)
     
@@ -212,6 +212,13 @@ def search():
     if img_path_from_memcache:
         global hit_rate_percent_from_mem
         hit_rate_percent_from_mem = hit_rate_percent_from_mem + 1
+        num=len[memcache]
+        counter=[]
+        for x in num:
+            if memcache[x]==key_id:
+                counter[x]=counter[x]+1
+        
+        lru_item=max(counter)
         return render_template('SearchanImage.html', user_image = img_path_from_memcache)
     #Get from database  
     else:
