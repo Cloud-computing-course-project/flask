@@ -1,14 +1,3 @@
-#////////////////////////////////////////Tasks///////////////////////////////
-#Complete put in memcache (look at replace policy) (Doaa)
-#Add baraa function for key (baraa) Done *******************************************************************************************
-#Front end: edit memcache config list (look at schema) + get values from db and show in html (in specific time) (Dalia) Done *******************
-#Front end: Add select capacity - edit clear button style - Done (Baraa) ***********************************************************
-#Backend: save capacity choosen - save policy choosen (in db) (Baraa)
-#Frontend: Tell user the defult policy is random - Default capacity 5MB (Doaa) Done *************************************************
-#Backend: Calculate the memconfig (Dalia) Donr **************************************************************************************
-#Put real data in Database
-
-
 import os
 import sys
 from flask import Flask, render_template, flash, request, session, redirect, url_for
@@ -109,7 +98,6 @@ def put_in_memcache(key, value, img_size):
         if(mem_config.replace_policy == "Random"):
             keyid, photo = random.choice(list(memcache.items()))
             invalidateKey(keyid, img_size)
-            print("Randommmmmmmmmmmmmmmmmmmmmmmm")
         else:
             #Delete the Least Recently Used ///////////////////////////////////////Doaa
             print("TODO")
@@ -177,7 +165,6 @@ def upload_file():
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(img_path)
             img_size = file.tell()
-            print(img_size, 'sdddddddddddddddddddddddddd')
 
             raw = Keys.query.filter_by(key_id=key_id).first()
             key_exists = raw is not None
