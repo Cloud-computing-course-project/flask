@@ -188,8 +188,14 @@ def UploadDateToMem():
         capacity = request.form.get('myRange')
         replace_policy = request.form.get('format')
         conn = get_db_connection()
-        #update memcache_config /////////////////////////////////Baraa///////////////////////////
+        sql_update_query = """Update memcache_config set capacity_MB = 3,replace_policy = least """
+        conn.execute(sql_update_query)
+        conn.commit()
         flash("Configs Added Successfully!")
+        conn.close()
+        # conn.execute('UPDATE memcache_config SET capacity_MB ,  replace_policy , items_num , items_size , request_num , hit_rate_percent , miss_rate_percent  ', (capacity,replace_policy , 1 ,1, 1 , 1.0 ,1.0))
+        #update memcache_config /////////////////////////////////Baraa///////////////////////////
+        
     else:
         flash("Error Added !")
     conn.commit()
