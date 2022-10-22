@@ -10,7 +10,7 @@ from flask_session.__init__ import Session
 import sqlite3
 import atexit
 import random
-from PIL import Image
+from PIL import ImageFile
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -19,7 +19,6 @@ UPLOAD_FOLDER = './static/images_added_by _the_user/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 SESSION_TYPE = 'memcache'
 
-global lru_item
 global memcache
 memcache = {}
 
@@ -98,9 +97,10 @@ def put_in_memcache(key, value, img_size):
     if (mem_config.items_size + img_size) > mem_config.capacity_MB:
         if(mem_config.replace_policy == "Random"):
             keyid, photo = random.choice(list(memcache.items()))
-            invalidateKey(keyid, img_size)
+            invalidateKey(keyid, os.stat(mem_cache[key_id]).st_size)
         else:
-            memcache.popitem(lru_item)
+            lru_key = list(memcache.keys())[0]
+            invalidateKey(lru_key, os.stat(memcache[lru_key]).st_size)
     memcache[key] = value
     update_item_size(img_size, True)
     
@@ -212,13 +212,9 @@ def search():
     if img_path_from_memcache:
         global hit_rate_percent_from_mem
         hit_rate_percent_from_mem = hit_rate_percent_from_mem + 1
-        num=len[memcache]
-        counter=[]
-        for x in num:
-            if memcache[x]==key_id:
-                counter[x]=counter[x]+1
-        
-        lru_item=max(counter)
+        img_size = os.stat(memcache[key_id]).st_size
+        invalidateKey(key_id, img_size)
+        put_in_memcache(key_id, img_path_from_memcache, img_size)
         return render_template('SearchanImage.html', user_image = img_path_from_memcache)
     #Get from database  
     else:
