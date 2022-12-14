@@ -29,11 +29,22 @@
         margin-right:0%;
     }
 
+    .topic1{
+      margin-top:200px;
+      color:#272643;
+      margin-left:350px;
+      margin-bottom: 0;
+      font-family: 'cursive';
+      font-size: 30px;
+      /* font-family: 'Poppins', sans-serif; */
+    }
     .topic{
       margin-top:200px;
       color:#272643;
-      margin-left:100px;
+      margin-left:230px;
+      margin-bottom: 40px;
       font-family: 'cursive';
+      font-size: 30px;
       /* font-family: 'Poppins', sans-serif; */
     }
     li{
@@ -64,6 +75,7 @@
       width: 75%;
       float: left;
       display: inline-block;
+
     }
     .slider {
     -webkit-appearance: none;
@@ -134,12 +146,11 @@
      color: #bae8e8;
       font-size: 15px;
        margin-top: 2%;
-       margin-left: 30%;
+       margin-left: 350px;
      }
      
      #Storage{
      padding-left:1%;
-       font-size: 70px;
        color: #272643;
        text-transform: capitalize ;
        font-weight: bolder;
@@ -173,17 +184,47 @@
         width: 15%;
         padding-top:1%;
         padding-bottom:1%;
+        padding-right: 0;
+        padding-left: 0;
         background-color: #e3f6f5;
         font-family: 'Poppins', sans-serif;
         font-weight: bold;
         font-size: 15px;
-        margin-left:8%;
-        margin-top:5%;
+        margin-left:130px;
+        margin-top:3%;
         border-radius: 50px;
         border: #2c698d solid;
         margin-bottom: 10px;
         color:#272643;    
     }
+    .c{
+      margin-left: 40%;
+      margin-top: 0%;
+      padding: 25px;
+    }
+    .counter{
+      display: inline;
+      font-size: 75px;
+      padding: 35px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    .button2{
+        margin: 3px;
+        width: 75px;
+        height:75px;
+       
+        background-color: #e3f6f5;
+        font-family: 'Poppins', sans-serif;
+        font-weight: bold;
+        font-size: 50px;
+       
+        border-radius: 50px;
+        border: 7px #2c698d solid;
+        margin-bottom: 10px;
+        color:#272643; 
+
+    }
+  
     .footer2{
       margin-top:0px;
       background-color: #272643;
@@ -258,7 +299,360 @@
       /* width: 45%; */
       margin-left: 0%;
       background-color: #272643;
-    }
+    } 
+    /*select Style */
+    select{
+    -webkit-appearance:none;
+   -moz-appearance:none;
+   -ms-appearance:none;
+   appearance:none;
+   outline:0;
+   box-shadow:none;
+   /* border:0!important; */
+   border-color: #2c698d;
+   border-width: .3em;
+   background: #e3f6f5;
+   background-image: none;
+   flex: 1;
+   padding: 0 .5em;
+   color:#272643;
+   /* cursor:pointer; */
+   font-size: 1em;
+   font-family: 'Poppins', sans-serif;
+   font-weight:bold ;
+    text-align: center;
+}
+select::-ms-expand{
+    display: none;
+}
+.select{
+    position: relative;
+   display: flex;
+   width: 20em;
+   height: 3em;
+   line-height: 3;
+   background: #e3f6f5;
+   overflow: hidden;
+   border-radius: .35em;
+   border-color: #2c698d;
+
+}
+.select::after{
+    /* content: '\25BC'; */
+   position: absolute;
+   top: 0;
+   right: 0;
+   padding: 0 1em;
+   background: #e3f6f5;
+   /* cursor:pointer; */
+   /* pointer-events:none; */
+   transition:.25s all ease;
+   border-color: #2c698d;
+
+}
+.select:hover::after{
+    /* color: #272643; */
+    border-color: #2c698d;
+}
+
+ 
+ #Choose{
+ padding-left:1%;
+   font-size: 50px;
+   color: #2c698d;
+   text-transform: capitalize ;
+   font-weight: bolder;
+   line-height: 85px;
+ }
+ #Policy{
+  color: #272643;
+  font-size: 50px;
+  font-weight: bolder;
+  line-height: 75px;
+ }
+
+ .footer{
+   margin-left: 46%;
+   margin-top: 0%;
+   margin-bottom:15%;
+ }
+
+ .select {
+            position: center;
+            font-family: Arial;
+            margin-left:230px;
+        }
+
+        .select select {
+            display: none;
+            /*hide original SELECT element:*/
+            margin-left:230px;
+        }
+
+        .btn {
+            background-color: DodgerBlue;
+            color: white;
+            padding: 10px 15px;
+            margin-left: 20px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            border-radius: 6px;
+            width: 150px;
+            height: 50px;
+            box-shadow: 0 0 10px rgb(0 50 0/0.3);
+            transition: 0.3s;
+        }
+
+        .select-selected {
+            background-color: DodgerBlue;
+        }
+
+        /*style the arrow inside the select element:*/
+        .select-selected:after {
+            position: absolute;
+            content: "";
+            top: 14px;
+            right: 10px;
+            width: 0;
+            height: 0;
+            border: 6px solid transparent;
+            border-color: #fff transparent transparent transparent;
+        }
+
+        /*point the arrow upwards when the select box is open (active):*/
+        .select-selected.select-arrow-active:after {
+            border-color: transparent transparent #fff transparent;
+            top: 7px;
+        }
+
+        /*style the items (options), including the selected item:*/
+        .select-items div,
+        .select-selected {
+            color: #ffffff;
+            padding: 8px 16px;
+            border: 1px solid transparent;
+            border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /*style items (options):*/
+        .select-items {
+            position: absolute;
+            background-color: DodgerBlue;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 99;
+        }
+
+        /*hide the items when the select box is closed:*/
+        .select-hide {
+            display: none;
+        }
+
+        .select-items div:hover,
+        .same-as-selected {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .square {
+            height: 250px;
+            width: 700px;
+            background-color: #e3f6f5;
+            margin-top: 20px;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            margin-left: 230px;
+        }
+
+        .progress-container {
+            display: block;
+            background-color: #fff;
+            height: 25px;
+        }
+
+        .progress-bar {
+            background-color: DodgerBlue;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .square2 {
+            height: 250px;
+            width: 700px;
+            background-color: #e3f6f5;
+            margin-top: 20px;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            margin-left: 230px;
+        }
+
+        .content {
+            /* background-color: #ddd; */
+            width: 350px;
+        }
+
+        .content>div {
+            padding: 150px;
+        }
+
+        .content>div:not(:first-child) {
+            display: none;
+        }
+
+        .bbtn {
+            background-color: #e4071d;
+            margin-left: 230px;
+            width: 15px;
+            /* width: fit-content; */
+        }
+
+
+        .bbtn:hover {
+            background-color: red;
+            width: 15px;
+            margin-left: 230px;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 75%;
+            height: 15px;
+            border-radius: 5px;
+            background: #0000FF;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            cursor: pointer;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            /* margin-left: 20px; */
+        }
+
+        .slider::-webkit-slider-thumb {
+
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #1da1f2;
+            cursor: pointer;
+
+        }
+
+        .config-cache {
+            color: black;
+            font-weight: bold;
+            white-space: nowrap;
+            /* padding-top: 10px; */
+            font-size: 20px;
+            /* margin-top: 50px ; */
+            margin-left: 20px;
+            margin-bottom: 20px;
+
+        }
+
+        .progression {
+            width: 300px;
+            text-align: left;
+        }
+
+        p.progress-text {
+            font-weight: bold;
+        }
+
+
+        .container {
+            height: 20px;
+            background-color: #CCC;
+            position: relative;
+            margin-left: 25px;
+            margin-bottom: 400px;
+            margin-top: 25px;
+        }
+
+        .container .progress-bar {
+            height: 100%;
+            background-color: #1da1f2;
+            position: absolute;
+        }
+
+        .containerProgress {
+            height: 20px;
+            background-color: #CCC;
+            position: relative;
+            margin-left: 25px;
+            margin-bottom: 25px;
+            margin-top: 25px;
+        }
+
+        .containerProgress .progress-bar {
+            height: 100%;
+            background-color: #1da1f2;
+            position: absolute;
+        }
+
+        custom-select{
+    -webkit-appearance:none;
+   -moz-appearance:none;
+   -ms-appearance:none;
+   appearance:none;
+   outline:0;
+   box-shadow:none;
+   /* border:0!important; */
+   border-color: #2c698d;
+   border-width: .3em;
+   background: #e3f6f5;
+   background-image: none;
+   padding: 0 .5em;
+   color:#272643;
+   /* cursor:pointer; */
+   font-size: 1em;
+   font-family: 'Poppins', sans-serif;
+   font-weight:bold ;
+    text-align: center;
+    margin-left: 230px; 
+    margin-right: 400px; 
+}
+
+.custom-select{
+    position: relative;
+   display: flex;
+   width: 20em;
+   height: 3em;
+   line-height: 3;
+   background: #e3f6f5;
+   overflow: hidden;
+   border-radius: .35em;
+   border-color: #2c698d;
+   margin-left: 230px; 
+  margin-right: 400px; 
+}
+.custom-select::after{
+    /* content: '\25BC'; */
+   position: absolute;
+   top: 0;
+   right: 400px;
+   padding: 230 1em;
+   background: #e3f6f5;
+   /* cursor:pointer; */
+   /* pointer-events:none; */
+   transition:.25s all ease;
+   border-color: #2c698d;
+
+}
+.custom-select:hover::after{
+    /* color: #272643; */
+    border-color: #2c698d;
+}
+    
     </style>
     <!DOCTYPE html>
     <html lang="en">
@@ -273,9 +667,10 @@
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;900&amp;display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://kit-free.fontawesome.com/releases/latest/css/free.min.css" media="all">
         <title> Cloud Project</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <script src="/assets/static/govuk_publishing_components/vendor/lux/lux-measurer-505eef3e243b1d08ea7c4b945ebe1ae146d896db61366e415b30cc1bcd84cbdc.js"> </script>
         <script src="/assets/static/govuk_publishing_components/rum-loader-c53469dcb841d7b228c914a2e8bdcf3b831a578adf7d4f21cf9da5b85df7381e.js"></script>
-    </head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.1/chart.min.js" integrity="sha512-O2fWHvFel3xjQSi9FyzKXWLTvnom+lOYR/AUEThL/fbP4hv1Lo5LCFCGuTXBRyKC4K4DJldg5kxptkgXAzUpvA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>      </head>
     <body>
     <form action=" " method="POST">
     <!-- @csrf   -->
@@ -300,13 +695,11 @@
         </div>
     </div>
     <div class="main">
-        <div class="cloud_image">
-            <!-- <img src="./images/cloudComp2.png" alt="cloud" height="450px" width="700px">  -->
-        </div>
+      <div>
     <div class="topic">
         <h1 >The current statistics for the Mem-Cache</h1>
     </div>
-    <div class="article-container group govuk-grid-column-two-thirds">
+    <!-- <div class="article-container group govuk-grid-column-two-thirds">
         <div class="content">
             <ul class="ul-2">
                 <li id="mem"> Memcache capacity is {{capacity_MB}} MB</li>
@@ -318,37 +711,234 @@
                 <li id="mem"> Hit rate is {{miss_rate_percent}}</li>
             </ul>
         </div>
+    </div> -->
+    <!--Start of Chart-->
+    <div class="container">
+      <canvas id="mychart"  height="15vh" width="50vw"></canvas>
     </div>
-    </div>    
-    <footer class="footer2">
-        <div class="footer2_title">
-            <h2 class="footer2_title"> Memory Cache Parameters</h2>
+    <script>
+      // Chart.defaults.borderColor = '#272643';
+       Chart.defaults.color = '#272643';
+      let mychart=document.getElementById('mychart').getContext('2d');
+      let massPopChart= new Chart(mychart,{
+        "mychart": {
+          "chartLeftMargin": "400px",
+        },
+        type:'bar',
+        data:{
+          labels:['Miss Rate', 'Hit Rate','Number of Items in Cache','total size of items in cache','number of requests served per minute'],
+          datasets:[{
+            label:'memcache pool statistics',
+            data:[7,15,8,200,3],
+            backgroundColor:['#0093AF ','#ADD8E6','#5D8AA8','#A4DDED','#1da1f2'],
+            backgroundWidth:4,
+            borderColor:'#777',
+            hoverBorderWidth:3,
+            hoverBorderColor:'white',
+          }]
+        },
+        options:{
+
+        }
+      });
+    </script>
+    <!--End of Chart-->
+    <!-- Start Of Policy -->
+        
+    </div>
+    <div class="topic">
+      <h2>Select between 2 mutually-exclusive </h2>
+    </div>
+    
+
+    <select id="custom-select" style="margin-left: 230px;">
+        <option value="0" disabled selected>Select mode :</option>
+        <option value="1" class="s">Manula</option>
+        <option value="2" class="s">Automatic</option>
+    </select>
+
+    <div class="custom-square1">
+        <div class="square">
+            <div class="progression" style="width: 75%;">
+                <p class="progress-text" style="margin-bottom: 10px;font-size: larger;margin-left: 25px;">resizing the memcache pool -Manual mode</p>
+                <div class="containerProgress">
+                    <div id="myBar" class="progress-bar" style="width: 20%;">1 instance</div>
+                </div>
+                <div class="square1btn" style="display: flex; gap: 10px;margin-top: 15px;">
+                    <button style="width:200px; background-color: #1da1f2; font-size: medium;" class="btn" onclick="decrease()" >shrinking -1</button>
+                    <button style="width:200px;  background-color: #1da1f2; font-size: medium;" class="btn" onclick="move()">growing +1</button>
+                  </div>
+            </div>
         </div>
-        <div class="info">
-      <div class="par1">
-          <h4 class="par2">1. There are more than one choice for the capacity of the memory cache, but the default capacity is 5MB.</h4>
-      <!-- <div class="par2"> -->
-          <p><h4 class="par2">2. Replacement Policies:</h4>  </p>
-      </div> 
-          <p class="p1">
-              a. Random Replacement<br>
-                  Its the default replacement policy of memory cache, Randomly selects a key and discards it to make space when necessary.
-                  This algorithm does not require keeping any information about the access
-                  history.
-          </p>
-          <p class="p1">
-              b. Least Recently Used <br>
-                  Discards the least recently used keys first. This algorithm requires keeping track of
-                  what was used when, if one wants to make sure the algorithm always discards the
-                  least recently used key.
-          </p>
-      <!-- </div> -->
-       </div>
-      </div>
-       </footer>
-     </div>
+    </div>
+
+    <div class="custom-square2" style="display: none;">
+        <div class="square2">
+            <form action="">
+                <div class="config-cache">
+                    <label for="cache-capcity">Max Miss Rate threshold:</label>
+                    <div>
+                        <input class="slider" type="range" value="0" name="Max Miss Rate" max="100" min="0" step="1"
+                            id="cache-capcity" oninput="slider_value()">
+                        <span id="value">0 %</span>
+                    </div>
+                </div>
+                <div class="config-cache">
+                    <label for="cache-capcity1">Min Miss Rate threshold:</label>
+                    <div>
+                        <input class="slider" type="range" value="0" name="Min Miss Rate" max="100" min="0" step="1"
+                            id="cache-capcity1" oninput="slider_value1()">
+                        <span id="value1">0 %</span>
+                    </div>
+                </div>
+                <form class="content">
+                    <button class="btn" style="background-color: #1da1f2; font-size: medium;" type="submit">Ok</button>
+                </form>
+            </form>
+        </div>
+    </div>
+
+    <form class="content" style="display:flex ;justify-content: center; gap: 10px;padding: 30px; margin: 30px;">
+        <button class="btn bbtn" style="height: 70px ; width: 200px; margin-left: 230px; ">Deleting all</button>
+        <button class="btn bbtn" style="height: 70px ; width: 200px; ">Clear</button>
+    </form>
+
+
+    <script>
+        var x, i, j, l, ll, selElmnt, a, b, c;
+        /*look for any elements with the class "custom-select":*/
+        x = document.getElementsByClassName("custom-select");
+        l = x.length;
+        for (i = 0; i < l; i++) {
+            selElmnt = x[i].getElementsByTagName("select")[0];
+            ll = selElmnt.length;
+            /*for each element, create a new DIV that will act as the selected item:*/
+            a = document.createElement("DIV");
+            a.setAttribute("class", "select-selected");
+            a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+            x[i].appendChild(a);
+            /*for each element, create a new DIV that will contain the option list:*/
+            b = document.createElement("DIV");
+            b.setAttribute("class", "select-items select-hide");
+            for (j = 1; j < ll; j++) {
+                /*for each option in the original select element,
+                create a new DIV that will act as an option item:*/
+                c = document.createElement("DIV");
+                c.innerHTML = selElmnt.options[j].innerHTML;
+                c.addEventListener("click", function (e) {
+                    /*when an item is clicked, update the original select box,
+                    and the selected item:*/
+                    var y, i, k, s, h, sl, yl;
+                    s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+                    sl = s.length;
+                    h = this.parentNode.previousSibling;
+                    for (i = 0; i < sl; i++) {
+                        if (s.options[i].innerHTML == this.innerHTML) {
+                            s.selectedIndex = i;
+                            h.innerHTML = this.innerHTML;
+                            y = this.parentNode.getElementsByClassName("same-as-selected");
+                            yl = y.length;
+                            for (k = 0; k < yl; k++) {
+                                y[k].removeAttribute("class");
+                            }
+                            this.setAttribute("class", "same-as-selected");
+                            break;
+                        }
+                    }
+                    h.click();
+                });
+                b.appendChild(c);
+            }
+            x[i].appendChild(b);
+            a.addEventListener("click", function (e) {
+                /*when the select box is clicked, close any other select boxes,
+                and open/close the current select box:*/
+                e.stopPropagation();
+                closeAllSelect(this);
+                this.nextSibling.classList.toggle("select-hide");
+                this.classList.toggle("select-arrow-active");
+            });
+        }
+        function closeAllSelect(elmnt) {
+            /*a function that will close all select boxes in the document,
+            except the current select box:*/
+            var x, y, i, xl, yl, arrNo = [];
+            x = document.getElementsByClassName("select-items");
+            y = document.getElementsByClassName("select-selected");
+            xl = x.length;
+            yl = y.length;
+            for (i = 0; i < yl; i++) {
+                if (elmnt == y[i]) {
+                    arrNo.push(i)
+                } else {
+                    y[i].classList.remove("select-arrow-active");
+                }
+            }
+            for (i = 0; i < xl; i++) {
+                if (arrNo.indexOf(i)) {
+                    x[i].classList.add("select-hide");
+                }
+            }
+        }
+        /*if the user clicks anywhere outside the select box,
+        then close all select boxes:*/
+        let divs = document.querySelector(".custom-square1");
+        let divs2 = document.querySelector(".custom-square2");
+        var choices = document.getElementById("custom-select");
+
+        choices.addEventListener("change", function () {
+            if (this.value == 1) {
+                divs.style.display = "block";
+                divs2.style.display = "none";
+            }
+            if (this.value == 2) {
+                divs.style.display = "none";
+                divs2.style.display = "block";
+            }
+        });
+
+        function slider_value() {
+            let slider = document.getElementById("cache-capcity");
+            let value = document.getElementById("value");
+            value.innerHTML = `${slider.value} %`;
+        }
+
+
+
+        function slider_value1() {
+            let slider1 = document.getElementById("cache-capcity1");
+            let value1 = document.getElementById("value1");
+            value1.innerHTML = `${slider1.value} %`;
+        }
+
+        var width = 1;
+
+        function move() {
+            var elem = document.getElementById("myBar");
+            if (width < 8) {
+                width += 1;
+                elem.style.width = width * 12.5 + '%';
+                elem.innerHTML = width * 1 + ' instance';
+            }
+
+        }
+
+        function decrease() {
+            var elem = document.getElementById("myBar");
+            if (width > 0 &&  width <= 8) {
+                width -= 1;
+                elem.style.width = width * 12.5 + '%';
+                elem.innerHTML = width * 1 + ' instance';
+            }
+
+        }
+
+    </script>
+
+    <!-- End Of Policy -->
     </form>
     </body>
     </html>
+    
     
     
